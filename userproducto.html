@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Usuario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .seccion {
+            background: white;
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .seccion:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .seccion h3 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4facfe;
+            position: relative;
+        }
+        .btn-logout {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(45deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            color: white;
+        }
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 50px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4facfe;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.6);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            min-width: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.3s ease;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-size: 18px;
+            background: #f8fafc;
+            border-radius: 15px;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .total-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .cart-summary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .cart-summary h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-cancel {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #4b5563;
+        }
+
+        .confirm-modal {
+            text-align: center;
+        }
+
+        .confirm-modal p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #374151;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            input[type="text"] {
+                min-width: 100%;
+            }
+
+            .cart-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Tienda Online</h1>  
+        </div>
+<button class="btn btn-logout" onclick="cerrarSesion()">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </button>
+        <div class="content">
+            <div class="seccion">
+                <h3>🔍 Buscar producto por nombre</h3>
+                <div class="search-container">
+                    <input type="text" id="buscarNombre" placeholder="Ingresa el nombre del producto">
+                    <button class="btn btn-primary" onclick="buscarProductoNombre()">Buscar</button>
+                </div>
+                <div id="resultadosBusquedaNombre"></div>
+            </div>
+
+            <div class="seccion">
+                <h3>📂 Buscar producto por tipo</h3>
+                <div class="search-container">
+                    <input type="text" id="buscarTipo" placeholder="Ingresa el tipo de producto">
+                    <button class="btn btn-primary" onclick="buscarProductoTipo()">Buscar</button>
+                </div>
+                <div id="resultadosBusquedaTipo"></div>
+            </div>
+
+            <div class="seccion">
+                <h3>📦 Todos los productos</h3>
+                <button class="btn btn-primary" onclick="listarProductos()">
+                    <span id="loadingProducts" style="display: none;" class="loading"></span>
+                    Actualizar lista
+                </button>
+                <div id="listaProductos"></div>
+            </div>
+
+            <div class="seccion">
+                <h3>🛒 Mi carrito</h3>
+                <div class="cart-actions">
+                    <button class="btn btn-success" onclick="verCarrito()">Ver carrito</button>
+                    <button class="btn btn-warning" onclick="completarCompra()">Completar compra</button>
+                </div>
+                <div id="carrito"></div>
+                <div id="mensajeCompra"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cantidad -->
+    <div id="cantidadModal" class="modal">
+        <div class="modal-content">
+            <h3>Agregar al carrito</h3>
+            <p>¿Cuántos productos quieres agregar?</p>
+            <input type="number" id="cantidadInput" placeholder="Cantidad" min="1" value="1">
+            <div class="modal-buttons">
+                <button class="btn btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-success" onclick="confirmarAgregarCarrito()">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confirm-modal">
+            <h3>Confirmar acción</h3>
+            <p id="confirmMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-cancel" onclick="cerrarConfirmModal()">Cancelar</button>
+                <button class="btn btn-warning" onclick="ejecutarAccion()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        let userId = null;
+        let productoTemporal = null;
+        let accionPendiente = null;
+
+        // Obtener el id del usuario desde el token
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        const payload = parseJwt(token);
+        if (payload && payload.userId) userId = payload.userId;
+
+        function showLoading(elementId, show = true) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.style.display = show ? 'inline-block' : 'none';
+            }
+        }
+
+        function showMessage(elementId, message, type = 'success') {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = `<div class="message ${type}">${message}</div>`;
+                setTimeout(() => {
+                    element.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        function mostrarModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('cantidadModal').style.display = 'none';
+            productoTemporal = null;
+        }
+
+        function mostrarConfirmModal(mensaje, accion) {
+            document.getElementById('confirmMessage').textContent = mensaje;
+            accionPendiente = accion;
+            mostrarModal('confirmModal');
+        }
+
+        function cerrarConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            accionPendiente = null;
+        }
+
+        function ejecutarAccion() {
+            if (accionPendiente) {
+                accionPendiente();
+            }
+            cerrarConfirmModal();
+        }
+
+        function buscarProductoNombre() {
+            const nombre = document.getElementById('buscarNombre').value.trim();
+            if (!nombre) {
+                showMessage('resultadosBusquedaNombre', 'Por favor ingresa un nombre de producto', 'error');
+                return;
+            }
+
+            fetch(`http://localhost:3000/api/user/buscar/${encodeURIComponent(nombre)}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(res => res.json())
+            .then(data => {
+                mostrarProductos(data.productos, 'resultadosBusquedaNombre');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('resultadosBusquedaNombre', 'Error al buscar productos', 'error');
+            });
+        }
+
+        function buscarProductoTipo() {
+            const tipo = document.getElementById('buscarTipo').value.trim();
+            if (!tipo) {
+                showMessage('resultadosBusquedaTipo', 'Por favor ingresa un tipo de producto', 'error');
+                return;
+            }
+
+            fetch(`http://localhost:3000/api/user/buscar_tipo/${encodeURIComponent(tipo)}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(res => res.json())
+            .then(data => {
+                mostrarProductos(data.productos, 'resultadosBusquedaTipo');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('resultadosBusquedaTipo', 'Error al buscar productos', 'error');
+            });
+        }
+
+        function listarProductos() {
+            showLoading('loadingProducts', true);
+            
+            fetch('http://localhost:3000/api/user/productos', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(res => res.json())
+            .then(data => {
+                mostrarProductos(data.productos, 'listaProductos');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('listaProductos').innerHTML = 
+                    '<div class="no-data">Error al cargar productos</div>';
+            })
+            .finally(() => {
+                showLoading('loadingProducts', false);
+            });
+        }
+
+        function mostrarProductos(productos, divId) {
+            const container = document.getElementById(divId);
+            
+            if (productos && productos.length) {
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Stock</th>
+                                <th>Precio</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                productos.forEach(p => {
+                    html += `
+                        <tr>
+                            <td>${p.id}</td>
+                            <td><strong>${p.nombre_producto}</strong></td>
+                            <td>${p.tipo_producto}</td>
+                            <td>${p.stock > 0 ? p.stock : '<span style="color: #ef4444;">Agotado</span>'}</td>
+                            <td>$${p.precio_producto || 'N/A'}</td>
+                            <td>
+                                ${p.stock > 0 ? 
+                                    `<button class="btn btn-success btn-small" onclick="mostrarModalCantidad('${p.id}')">
+                                        Agregar al carrito
+                                    </button>` :
+                                    `<button class="btn btn-small" disabled style="background: #94a3b8; cursor: not-allowed;">
+                                        Sin stock
+                                    </button>`
+                                }
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="no-data">No se encontraron productos</div>';
+            }
+        }
+
+        function mostrarModalCantidad(id_producto) {
+            // Verificar que tenemos token y userId
+            if (!token) {
+                showMessage('mensajeCompra', 'No tienes sesión activa. Por favor inicia sesión.', 'error');
+                return;
+            }
+            
+            if (!userId) {
+                showMessage('mensajeCompra', 'No se pudo obtener tu ID de usuario. Por favor inicia sesión nuevamente.', 'error');
+                return;
+            }
+
+            productoTemporal = id_producto;
+            document.getElementById('cantidadInput').value = '1';
+            mostrarModal('cantidadModal');
+        }
+
+        function confirmarAgregarCarrito() {
+            const cantidad = document.getElementById('cantidadInput').value;
+            
+            if (!cantidad || isNaN(cantidad) || cantidad <= 0) {
+                showMessage('mensajeCompra', 'Por favor ingresa una cantidad válida mayor a 0', 'error');
+                return;
+            }
+
+            console.log('Enviando datos:', {
+                id_comprador: userId,
+                id_producto: productoTemporal,
+                cantidad: parseInt(cantidad)
+            });
+
+            fetch('http://localhost:3000/api/carrito', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    id_comprador: userId,
+                    id_producto: productoTemporal,
+                    cantidad: parseInt(cantidad)
+                })
+            })
+            .then(res => {
+                console.log('Response status:', res.status);
+                return res.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.message) {
+                    showMessage('mensajeCompra', data.message, 'success');
+                    // Actualizar la lista de productos para mostrar el nuevo stock
+                    listarProductos();
+                } else {
+                    showMessage('mensajeCompra', 'Error: ' + (data.error || 'Respuesta inesperada del servidor'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error completo:', error);
+                showMessage('mensajeCompra', 'Error al agregar al carrito: ' + error.message, 'error');
+            });
+
+            cerrarModal();
+        }
+
+        function verCarrito() {
+            fetch(`http://localhost:3000/api/carrito/${userId}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('carrito');
+                
+                if (data.carrito && data.carrito.length) {
+                    let html = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio unitario</th>
+                                    <th>Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.carrito.forEach(item => {
+                        html += `
+                            <tr>
+                                <td><strong>${item.nombre_producto}</strong></td>
+                                <td>${item.cantidad}</td>
+                                <td>$${parseFloat(item.precio_unitario).toFixed(2)}</td>
+                                <td>$${parseFloat(item.total).toFixed(2)}</td>
+                                <td>
+                                    <button class="btn btn-success btn-small" onclick="incrementarCantidad('${item.id_producto}')">+</button>
+                                    <button class="btn btn-warning btn-small" onclick="decrementarCantidad('${item.id_producto}')">-</button>
+                                    <button class="btn btn-small" onclick="confirmarEliminarDelCarrito('${item.id_producto}')" style="background: #ef4444; color: white;">🗑️</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += '</tbody></table>';
+                    html += `<div class="cart-summary">
+                        <h4>Resumen del carrito</h4>
+                        <p><strong>Total de productos:</strong> ${data.total_items}</p>
+                        <p><strong>Total general:</strong> $${data.total_general}</p>
+                    </div>`;
+                    
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="no-data">El carrito está vacío</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('carrito').innerHTML = '<div class="no-data">Error al cargar el carrito</div>';
+            });
+        }
+
+        function incrementarCantidad(id_producto) {
+            fetch('http://localhost:3000/api/carrito/cantidad', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    id_comprador: userId,
+                    id_producto: id_producto,
+                    operacion: 'incrementar'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message) {
+                    verCarrito(); // Actualizar vista del carrito
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('mensajeCompra', 'Error al actualizar cantidad', 'error');
+            });
+        }
+
+        function decrementarCantidad(id_producto) {
+            fetch('http://localhost:3000/api/carrito/cantidad', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    id_comprador: userId,
+                    id_producto: id_producto,
+                    operacion: 'decrementar'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message) {
+                    verCarrito(); // Actualizar vista del carrito
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('mensajeCompra', 'Error al actualizar cantidad', 'error');
+            });
+        }
+
+        function confirmarEliminarDelCarrito(id_producto) {
+            mostrarConfirmModal(
+                '¿Estás seguro de que quieres eliminar este producto del carrito?',
+                () => eliminarDelCarrito(id_producto)
+            );
+        }
+
+        function eliminarDelCarrito(id_producto) {
+            fetch('http://localhost:3000/api/carrito/producto', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    id_comprador: userId,
+                    id_producto: id_producto
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message) {
+                    showMessage('mensajeCompra', data.message, 'success');
+                    verCarrito(); // Actualizar vista del carrito
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('mensajeCompra', 'Error al eliminar del carrito', 'error');
+            });
+        }
+
+        function completarCompra() {
+            mostrarConfirmModal(
+                '¿Estás seguro de que quieres completar la compra?',
+                () => {
+                    fetch('http://localhost:3000/api/carrito/completar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ id_comprador: userId })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        showMessage('mensajeCompra', data.message || 'Compra realizada exitosamente', 'success');
+                        verCarrito(); // Actualizar vista del carrito
+                        listarProductos(); // Actualizar lista de productos para mostrar nuevo stock
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('mensajeCompra', 'Error al completar la compra', 'error');
+                    });
+                }
+            );
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Eventos para buscar con Enter
+        document.getElementById('buscarNombre').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                buscarProductoNombre();
+            }
+        });
+
+        document.getElementById('buscarTipo').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                buscarProductoTipo();
+            }
+        });
+
+        // Enter en el modal de cantidad
+        document.getElementById('cantidadInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                confirmarAgregarCarrito();
+            }
+        });
+
+        // Cargar productos al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            listarProductos();
+        });
+        function cerrarSesion() {
+            // Mostrar confirmación
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                // Limpiar localStorage
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                
+                // Mostrar mensaje y redirigir
+                showMessage('Cerrando sesión...', 'info');
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador - Productos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .header .user-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(45deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            color: white;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-card h3 {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-custom {
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(45deg, #3498db, #5dade2);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: linear-gradient(45deg, #2980b9, #3498db);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            color: white;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(45deg, #27ae60, #58d68d);
+            color: white;
+        }
+
+        .btn-success-custom:hover {
+            background: linear-gradient(45deg, #229954, #27ae60);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+            color: white;
+        }
+
+        .btn-warning-custom {
+            background: linear-gradient(45deg, #f39c12, #f7dc6f);
+            color: white;
+        }
+
+        .btn-warning-custom:hover {
+            background: linear-gradient(45deg, #e67e22, #f39c12);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+            color: white;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+            color: white;
+            border: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.01);
+        }
+
+        .table tbody td {
+            border-color: #e9ecef;
+            vertical-align: middle;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            font-weight: 500;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-cogs me-2"></i>Panel de Administración</h1>
+                <div class="user-info">
+                    <i class="fas fa-user-shield me-1"></i>
+                    Bienvenido, Administrador
+                </div>
+            </div>
+            <button class="btn btn-logout" onclick="cerrarSesion()">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </button>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalClientes">0</div>
+                <div class="stat-label">Clientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalProductos">0</div>
+                <div class="stat-label">Productos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stockTotal">0</div>
+                <div class="stat-label">Stock Total</div>
+            </div>
+        </div>
+
+        <!-- Clientes registrados -->
+        <div class="section-card">
+            <h3><i class="fas fa-users"></i>Clientes Registrados</h3>
+            <button class="btn btn-custom btn-primary-custom" onclick="listarClientes()">
+                <i class="fas fa-sync-alt me-2"></i>Ver Clientes
+            </button>
+            <div id="listaClientes" class="mt-3"></div>
+            <div id="loadingClientes" class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Cargando clientes...
+            </div>
+        </div>
+
+        <!-- Todos los productos -->
+        <div class="section-card">
+            <h3><i class="fas fa-boxes"></i>Inventario de Productos</h3>
+            <button class="btn btn-custom btn-primary-custom" onclick="listarProductos()">
+                <i class="fas fa-sync-alt me-2"></i>Actualizar Lista
+            </button>
+            <div id="listaProductos" class="mt-3"></div>
+            <div id="loadingProductos" class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Cargando productos...
+            </div>
+        </div>
+
+        <!-- Agregar producto nuevo -->
+        <div class="section-card">
+            <h3><i class="fas fa-plus-circle"></i>Agregar Producto Nuevo</h3>
+            <form id="formNuevoProducto" onsubmit="agregarProducto(event)">
+                <div class="form-grid">
+                    <input type="text" class="form-control" name="nombre_producto" placeholder="Nombre del producto" required>
+                    <input type="text" class="form-control" name="tipo_producto" placeholder="Tipo/Categoría" required>
+                    <input type="number" class="form-control" name="stock" placeholder="Stock inicial" min="0" required>
+                    <input type="number" class="form-control" name="precio_producto" placeholder="Precio ($)" min="0" step="0.01" required>
+                </div>
+                <div class="mb-3">
+                    <textarea class="form-control" name="descripcion" placeholder="Descripción del producto" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-custom btn-success-custom">
+                    <i class="fas fa-plus me-2"></i>Agregar Producto
+                </button>
+            </form>
+            <div id="mensajeNuevoProducto" class="mt-3"></div>
+        </div>
+
+        <!-- Modificar producto -->
+        <div class="section-card">
+            <h3><i class="fas fa-edit"></i>Modificar Producto</h3>
+            <form id="formModificarProducto" onsubmit="modificarProducto(event)">
+                <div class="form-grid">
+                    <input type="text" class="form-control" name="id" placeholder="ID del producto" required>
+                    <input type="text" class="form-control" name="nombre_producto" placeholder="Nuevo nombre" required>
+                    <input type="text" class="form-control" name="tipo_producto" placeholder="Nuevo tipo" required>
+                    <input type="number" class="form-control" name="precio_producto" placeholder="Nuevo precio" min="0" step="0.01" required>
+                </div>
+                <div class="form-grid">
+                    <input type="number" class="form-control" name="stock" placeholder="Nuevo stock" min="0" required>
+                    <textarea class="form-control" name="descripcion" placeholder="Nueva descripción" rows="2" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-custom btn-warning-custom">
+                    <i class="fas fa-save me-2"></i>Modificar Producto
+                </button>
+            </form>
+            <div id="mensajeModificarProducto" class="mt-3"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const token = localStorage.getItem('token');
+
+        // Verificar autenticación al cargar
+        if (!token) {
+            window.location.href = 'main.html';
+        }
+
+        function cerrarSesion() {
+            // Mostrar confirmación
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                // Limpiar localStorage
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                
+                // Mostrar mensaje y redirigir
+                showMessage('Cerrando sesión...', 'info');
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 1000);
+            }
+        }
+
+        function showMessage(message, type = 'info', containerId = 'mensaje') {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                
+                // Auto-dismiss después de 5 segundos
+                setTimeout(() => {
+                    const alert = container.querySelector('.alert');
+                    if (alert) {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
+                }, 5000);
+            }
+        }
+
+        function showLoading(elementId, show = true) {
+            const loading = document.getElementById(elementId);
+            if (loading) {
+                loading.style.display = show ? 'block' : 'none';
+            }
+        }
+
+        function updateStats() {
+            // Actualizar estadísticas rápidas
+            const clientesRows = document.querySelectorAll('#listaClientes table tbody tr');
+            const productosRows = document.querySelectorAll('#listaProductos table tbody tr');
+            
+            document.getElementById('totalClientes').textContent = clientesRows.length || 0;
+            document.getElementById('totalProductos').textContent = productosRows.length || 0;
+            
+            // Calcular stock total
+            let stockTotal = 0;
+            productosRows.forEach(row => {
+                const stockCell = row.cells[4]; // Columna de stock
+                if (stockCell) {
+                    stockTotal += parseInt(stockCell.textContent) || 0;
+                }
+            });
+            document.getElementById('stockTotal').textContent = stockTotal;
+        }
+
+        function listarClientes() {
+            showLoading('loadingClientes', true);
+            
+            fetch('http://localhost:3000/api/admin/clientes', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Error en la respuesta del servidor');
+                return res.json();
+            })
+            .then(data => {
+                showLoading('loadingClientes', false);
+                
+                if (data.usuarios && data.usuarios.length) {
+                    let html = `
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                        <th><i class="fas fa-user me-1"></i>Usuario</th>
+                                        <th><i class="fas fa-shield-alt me-1"></i>Rol</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    
+                    data.usuarios.forEach(u => {
+                        const rol = u.rol || (u.is_admin ? 'admin' : 'usuario');
+                        const rolIcon = rol === 'admin' ? 'fas fa-user-shield text-danger' : 'fas fa-user text-primary';
+                        
+                        html += `
+                            <tr>
+                                <td><strong>${u.id_usuario}</strong></td>
+                                <td>${u.nombre_usuario}</td>
+                                <td><i class="${rolIcon} me-1"></i>${rol}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += '</tbody></table></div>';
+                    document.getElementById('listaClientes').innerHTML = html;
+                } else {
+                    document.getElementById('listaClientes').innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>No hay clientes registrados.
+                        </div>
+                    `;
+                }
+                updateStats();
+            })
+            .catch(error => {
+                showLoading('loadingClientes', false);
+                document.getElementById('listaClientes').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Error al cargar clientes: ${error.message}
+                    </div>
+                `;
+            });
+        }
+
+        function listarProductos() {
+            showLoading('loadingProductos', true);
+            
+            fetch('http://localhost:3000/api/admin/productos', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Error en la respuesta del servidor');
+                return res.json();
+            })
+            .then(data => {
+                showLoading('loadingProductos', false);
+                
+                if (data.productos && data.productos.length) {
+                    let html = `
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                        <th><i class="fas fa-tag me-1"></i>Nombre</th>
+                                        <th><i class="fas fa-layer-group me-1"></i>Tipo</th>
+                                        <th><i class="fas fa-align-left me-1"></i>Descripción</th>
+                                        <th><i class="fas fa-cubes me-1"></i>Stock</th>
+                                        <th><i class="fas fa-dollar-sign me-1"></i>Precio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    
+                    data.productos.forEach(p => {
+                        const stockClass = p.stock <= 5 ? 'text-danger fw-bold' : p.stock <= 10 ? 'text-warning fw-bold' : 'text-success';
+                        
+                        html += `
+                            <tr>
+                                <td><strong>${p.id}</strong></td>
+                                <td>${p.nombre_producto}</td>
+                                <td><span class="badge bg-secondary">${p.tipo_producto}</span></td>
+                                <td>${p.descripcion.substring(0, 50)}${p.descripcion.length > 50 ? '...' : ''}</td>
+                                <td><span class="${stockClass}">${p.stock}</span></td>
+                                <td><strong>$${parseFloat(p.precio).toFixed(2)}</strong></td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += '</tbody></table></div>';
+                    document.getElementById('listaProductos').innerHTML = html;
+                } else {
+                    document.getElementById('listaProductos').innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>No hay productos en el inventario.
+                        </div>
+                    `;
+                }
+                updateStats();
+            })
+            .catch(error => {
+                showLoading('loadingProductos', false);
+                document.getElementById('listaProductos').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Error al cargar productos: ${error.message}
+                    </div>
+                `;
+            });
+        }
+
+        function agregarProducto(event) {
+            event.preventDefault();
+            const form = document.getElementById('formNuevoProducto');
+            const data = Object.fromEntries(new FormData(form));
+            
+            // Validaciones adicionales
+            if (parseFloat(data.precio_producto) <= 0) {
+                showMessage('El precio debe ser mayor que 0', 'warning', 'mensajeNuevoProducto');
+                return;
+            }
+            
+            if (parseInt(data.stock) < 0) {
+                showMessage('El stock no puede ser negativo', 'warning', 'mensajeNuevoProducto');
+                return;
+            }
+            
+            fetch('http://localhost:3000/api/admin/producto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Error en la respuesta del servidor');
+                return res.json();
+            })
+            .then(data => {
+                showMessage(data.message || 'Producto agregado exitosamente', 'success', 'mensajeNuevoProducto');
+                form.reset();
+                listarProductos();
+            })
+            .catch(error => {
+                showMessage('Error al agregar producto: ' + error.message, 'danger', 'mensajeNuevoProducto');
+            });
+        }
+
+        function modificarProducto(event) {
+            event.preventDefault();
+            const form = document.getElementById('formModificarProducto');
+            const data = Object.fromEntries(new FormData(form));
+            
+            // Validaciones adicionales
+            if (parseFloat(data.precio_producto) <= 0) {
+                showMessage('El precio debe ser mayor que 0', 'warning', 'mensajeModificarProducto');
+                return;
+            }
+            
+            if (parseInt(data.stock) < 0) {
+                showMessage('El stock no puede ser negativo', 'warning', 'mensajeModificarProducto');
+                return;
+            }
+            
+            fetch('http://localhost:3000/api/admin/modificar', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Error en la respuesta del servidor');
+                return res.json();
+            })
+            .then(data => {
+                showMessage(data.message || 'Producto modificado exitosamente', 'success', 'mensajeModificarProducto');
+                form.reset();
+                listarProductos();
+            })
+            .catch(error => {
+                showMessage('Error al modificar producto: ' + error.message, 'danger', 'mensajeModificarProducto');
+            });
+        }
+
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            listarProductos();
+            listarClientes();
+        });
+    </script>
+</body>
+</html>
